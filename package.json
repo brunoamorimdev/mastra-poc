@@ -1,0 +1,29 @@
+{
+  "name": "mastra-poc",
+  "version": "1.0.0",
+  "description": "## Minimal Viable Product",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "workflow": "ts-node src/workflow.ts",
+    "test": "ts-node test/workflow.test.ts",
+    "test:build": "npm run build && echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ai-sdk/openai": "^2.0.19",
+    "@mastra/core": "^0.14.1",
+    "@mastra/github": "^1.2.8",
+    "@mastra/mcp": "^0.10.12",
+    "dotenv": "^17.2.1",
+    "typescript": "^5.9.2"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "ts-node": "^10.9.2"
+  }
+}
