@@ -1,18 +1,26 @@
-# Mastra AI POC
+# Mastra AI POC - GitHub MCP Integration
 
-## ✅ Minimal Viable Product - COMPLETED
+## ✅ Minimal Viable Product - COMPLETED with GitHub MCP
 
-This project implements a **Mastra AI integrated workflow** that executes the following flow as specified in the requirements:
+This project implements a **Mastra AI integrated workflow** using **GitHub's Model Context Protocol (MCP)** that executes the following flow as specified in the requirements:
 
 1. ✅ **Create a branch in a GitHub repo**
 2. ✅ **Edit code**  
 3. ✅ **Commit changes**
 4. ✅ **Generate the Pull Request**
 
-### 🤖 Agent Configuration
+### 🤖 Developer Agent Configuration
 - **Developer Prompt**: "You are a Senior Typescript Developer specialized in developing scalable applications using TDD, clean arch and BDD"
 - **Environment Management**: Uses `.env` to store secrets and `constants.ts` for dynamic configuration
-- **AI Provider**: OpenAI GPT-4 with GitHub API integration through Mastra's tools
+- **AI Provider**: OpenAI GPT-4 with GitHub integration through **GitHub MCP Server**
+- **MCP Integration**: Uses Model Context Protocol for standardized GitHub operations
+
+### 🔗 GitHub MCP Server
+This implementation leverages the official `github-mcp-server` package that provides:
+- Comprehensive Git repository management capabilities
+- 29+ Git operations with advanced developer workflows
+- Standardized Model Context Protocol interface
+- Enhanced security and reliability
 
 ## 🚀 Quick Start
 
@@ -62,8 +70,8 @@ This project implements a **Mastra AI integrated workflow** that executes the fo
 ```
 src/
 ├── constants.ts    # Configuration with environment variables and settings
-├── index.ts        # Mastra instance setup with GitHub integration and AI agent
-└── workflow.ts     # Main workflow implementation with all 4 required steps
+├── index.ts        # Mastra instance setup with GitHub MCP client and AI agent
+└── workflow.ts     # Main workflow implementation with MCP-powered GitHub operations
 
 test/
 └── workflow.test.ts # Validation tests
@@ -72,11 +80,25 @@ docs/
 └── README.md       # Detailed documentation and API reference
 ```
 
+### 🔄 MCP Architecture Flow
+
+```
+AI Agent (TypeScript Developer) 
+    ↓ 
+Mastra Core Framework
+    ↓
+GitHub MCP Client
+    ↓
+GitHub MCP Server (github-mcp-server)
+    ↓
+GitHub API (REST/GraphQL)
+```
+
 ## 🔧 Configuration
 
 ### Environment Variables (`.env`)
 ```env
-# GitHub Configuration  
+# GitHub Configuration (used by MCP server)
 GITHUB_TOKEN=your_github_token
 GITHUB_REPO_OWNER=your_username
 GITHUB_REPO_NAME=your_repository
@@ -90,6 +112,7 @@ OPENAI_API_KEY=your_openai_key
 - AI model configuration  
 - Workflow default values (branch prefixes, commit messages, PR templates)
 - Agent prompt and behavior settings
+- MCP client configuration
 
 ## 🎯 Usage Example
 

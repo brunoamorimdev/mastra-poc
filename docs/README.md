@@ -1,24 +1,26 @@
-# Mastra AI POC - Setup and Usage Guide
+# Mastra AI POC - Setup and Usage Guide (GitHub MCP Integration)
 
-This project implements a Mastra AI integrated workflow that automates GitHub operations including branch creation, code editing, committing changes, and pull request generation.
+This project implements a Mastra AI integrated workflow that automates GitHub operations using **GitHub's Model Context Protocol (MCP)**, including branch creation, code editing, committing changes, and pull request generation.
 
 ## Features
 
-✅ **GitHub Workflow Automation**:
-1. Create branches in GitHub repositories
-2. Edit code files through AI-powered automation
-3. Commit changes with meaningful messages
-4. Generate Pull Requests automatically
+✅ **GitHub MCP Workflow Automation**:
+1. Create branches in GitHub repositories via MCP
+2. Edit code files through AI-powered automation using MCP tools
+3. Commit changes with meaningful messages through MCP
+4. Generate Pull Requests automatically via MCP server
 
-✅ **AI Agent Configuration**:
+✅ **AI Developer Agent Configuration**:
 - Senior TypeScript Developer persona specialized in TDD, clean architecture, and BDD
-- Integrated with GitHub API through Mastra's GitHub integration
+- Integrated with GitHub via **Model Context Protocol (MCP)** for standardized API access
 - Uses OpenAI GPT-4 for intelligent code modifications
+- Leverages `github-mcp-server` for comprehensive Git operations
 
-✅ **Environment Configuration**:
-- Environment variables for secure credential management
-- Dynamic configuration through `constants.ts`
-- TypeScript-first implementation with full type safety
+✅ **MCP Architecture**:
+- Standardized protocol for AI-to-GitHub communication
+- Enhanced security and reliability through MCP
+- 29+ Git operations with advanced developer workflows
+- Environment-based configuration for MCP client setup
 
 ## Prerequisites
 
@@ -74,7 +76,7 @@ NODE_ENV=development
 npm run build
 ```
 
-### 2. Run the workflow
+### 2. Run the MCP workflow
 ```bash
 npm run workflow
 ```
@@ -89,17 +91,23 @@ npm run dev
 ```
 src/
 ├── constants.ts          # Configuration and constants
-├── index.ts             # Main Mastra instance and agent setup
-└── workflow.ts          # GitHub workflow implementation
+├── index.ts             # Main Mastra instance with MCP client setup
+└── workflow.ts          # GitHub MCP workflow implementation
 
 dist/                    # Compiled JavaScript output
 ```
 
-## Configuration
+## MCP Configuration
 
 ### Agent Prompt
-The agent is configured with the following prompt as specified in requirements:
+The developer agent is configured with the following prompt as specified in requirements:
 > "You are a Senior Typescript Developer specialized in developing scalable applications using TDD, clean arch and BDD"
+
+### MCP Client Configuration
+The GitHub MCP client is configured to:
+- Connect to `github-mcp-server` via stdio transport
+- Use environment variables for GitHub authentication
+- Provide 29+ Git operations through standardized MCP protocol
 
 ### Workflow Configuration
 Default settings in `constants.ts`:
@@ -112,7 +120,15 @@ Default settings in `constants.ts`:
 ### GitHubWorkflow Class
 
 #### `execute(input: WorkflowInput): Promise<void>`
-Executes the complete GitHub workflow.
+Executes the complete GitHub workflow using MCP.
+
+**MCP Workflow Steps:**
+1. Connects to GitHub MCP server
+2. Creates branch via MCP tools
+3. Edits code through MCP automation
+4. Commits changes using MCP
+5. Creates PR via MCP server
+6. Disconnects from MCP client
 
 **Parameters:**
 - `codeChanges: string` - The code changes to implement

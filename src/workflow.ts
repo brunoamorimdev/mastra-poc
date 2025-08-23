@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { mastra, githubAgent } from './index';
+import { mastra, githubAgent, githubMCPClient } from './index';
 import { CONFIG } from './constants';
 
 interface WorkflowInput {
@@ -19,17 +19,18 @@ interface WorkflowInput {
 
 class GitHubWorkflow {
   private agent = githubAgent;
+  private mcpClient = githubMCPClient;
   private config = CONFIG;
 
   /**
-   * Executes the complete GitHub workflow:
+   * Executes the complete GitHub workflow using MCP:
    * 1. Create a branch
    * 2. Edit code
    * 3. Commit changes
    * 4. Generate Pull Request
    */
   async execute(input: WorkflowInput): Promise<void> {
-    console.log('🚀 Starting GitHub workflow automation...');
+    console.log('🚀 Starting GitHub workflow automation with MCP...');
     
     const {
       codeChanges,
@@ -41,6 +42,10 @@ class GitHubWorkflow {
     } = input;
 
     try {
+      // Ensure MCP client is connected
+      console.log('🔌 Connecting to GitHub MCP server...');
+      await this.mcpClient.connect();
+      
       // Step 1: Create a new branch
       console.log('📋 Step 1: Creating new branch...');
       await this.createBranch(branchName);
@@ -57,20 +62,28 @@ class GitHubWorkflow {
       console.log('🔀 Step 4: Creating Pull Request...');
       await this.createPullRequest(branchName, prTitle, prBody);
       
-      console.log('✅ Workflow completed successfully!');
+      console.log('✅ Workflow completed successfully with MCP!');
     } catch (error) {
       console.error('❌ Workflow failed:', error);
       throw error;
+    } finally {
+      // Cleanup MCP connection
+      await this.mcpClient.disconnect();
     }
   }
 
   private async createBranch(branchName: string): Promise<void> {
     const prompt = `
-Create a new branch named "${branchName}" in the repository ${this.config.github.repoOwner}/${this.config.github.repoName}.
-Use the GitHub API to:
-1. Get the default branch reference
+As a Senior TypeScript Developer, use the available GitHub MCP tools to create a new branch.
+
+Task: Create a new branch named "${branchName}" in the repository ${this.config.github.repoOwner}/${this.config.github.repoName}.
+
+Steps to follow:
+1. Use the appropriate MCP tool to get the default branch reference
 2. Create a new branch from the default branch
 3. Confirm the branch was created successfully
+
+Use clean architecture principles and ensure proper error handling.
 `;
 
     const result = await this.agent.generate(prompt);
@@ -80,18 +93,24 @@ Use the GitHub API to:
 
   private async editCode(filePath: string, codeChanges: string, branchName: string): Promise<void> {
     const prompt = `
-Edit the file "${filePath}" in the repository ${this.config.github.repoOwner}/${this.config.github.repoName} on branch "${branchName}".
-Apply the following code changes:
+As a Senior TypeScript Developer following TDD, clean architecture, and BDD principles, use the available GitHub MCP tools to edit code.
 
+Task: Edit the file "${filePath}" in the repository ${this.config.github.repoOwner}/${this.config.github.repoName} on branch "${branchName}".
+
+Apply the following code changes:
 ${codeChanges}
 
-Use the GitHub API to:
-1. Get the current file content
-2. Apply the requested changes
+Steps to follow:
+1. Use MCP tools to get the current file content
+2. Apply the requested changes while maintaining:
+   - TypeScript best practices
+   - Clean architecture principles
+   - Test-driven development approach
+   - Behavior-driven development patterns
 3. Update the file with the new content
 4. Confirm the file was updated successfully
 
-Make sure to preserve existing code structure and follow TypeScript/clean architecture best practices.
+Ensure code quality, proper typing, and maintainability.
 `;
 
     const result = await this.agent.generate(prompt);
@@ -101,14 +120,18 @@ Make sure to preserve existing code structure and follow TypeScript/clean archit
 
   private async commitChanges(branchName: string, commitMessage: string): Promise<void> {
     const prompt = `
-Commit the changes made to branch "${branchName}" in repository ${this.config.github.repoOwner}/${this.config.github.repoName}.
+As a Senior TypeScript Developer, use the available GitHub MCP tools to commit changes.
+
+Task: Commit the changes made to branch "${branchName}" in repository ${this.config.github.repoOwner}/${this.config.github.repoName}.
 Use the commit message: "${commitMessage}"
 
-Use the GitHub API to:
-1. Get the current commit SHA
+Steps to follow:
+1. Use MCP tools to get the current commit SHA
 2. Create a new commit with the changes
 3. Update the branch reference to point to the new commit
 4. Confirm the commit was created successfully
+
+Follow conventional commit standards and best practices.
 `;
 
     const result = await this.agent.generate(prompt);
@@ -118,16 +141,21 @@ Use the GitHub API to:
 
   private async createPullRequest(branchName: string, prTitle: string, prBody: string): Promise<void> {
     const prompt = `
-Create a Pull Request in repository ${this.config.github.repoOwner}/${this.config.github.repoName}.
+As a Senior TypeScript Developer, use the available GitHub MCP tools to create a Pull Request.
+
+Task: Create a Pull Request in repository ${this.config.github.repoOwner}/${this.config.github.repoName}.
 - Source branch: "${branchName}"
 - Target branch: "main" (or default branch)
 - Title: "${prTitle}"
 - Body: "${prBody}"
 
-Use the GitHub API to:
-1. Create the pull request
-2. Confirm the PR was created successfully
-3. Return the PR URL for reference
+Steps to follow:
+1. Use MCP tools to create the pull request
+2. Ensure proper PR template formatting
+3. Confirm the PR was created successfully
+4. Return the PR URL for reference
+
+Follow clean architecture principles and ensure the PR description is comprehensive.
 `;
 
     const result = await this.agent.generate(prompt);
@@ -143,23 +171,32 @@ async function main() {
   // Example workflow execution
   const exampleInput: WorkflowInput = {
     codeChanges: `
-// Example: Add a new utility function
+// Example: Add a new utility function following TypeScript best practices
 export function formatDate(date: Date): string {
   return date.toISOString().split('T')[0];
 }
 
-// Add proper TypeScript types
+// Add proper TypeScript types with clean architecture
 export interface ApiResponse<T = any> {
   data: T;
   status: number;
   message?: string;
+}
+
+// BDD-style test helper
+export function createTestApiResponse<T>(data: T): ApiResponse<T> {
+  return {
+    data,
+    status: 200,
+    message: 'Success'
+  };
 }
 `,
     filePath: 'src/utils.ts',
     branchName: 'feature/add-utility-functions',
     commitMessage: 'feat: add date formatting and API response utilities',
     prTitle: 'Add utility functions for date formatting and API responses',
-    prBody: 'This PR adds utility functions following TypeScript best practices and clean architecture principles.',
+    prBody: 'This PR adds utility functions following TypeScript best practices, clean architecture principles, and TDD/BDD methodologies.',
   };
 
   try {

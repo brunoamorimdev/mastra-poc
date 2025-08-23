@@ -17,9 +17,9 @@
   "dependencies": {
     "@ai-sdk/openai": "^2.0.19",
     "@mastra/core": "^0.14.1",
-    "@mastra/github": "^1.2.8",
     "@mastra/mcp": "^0.10.12",
     "dotenv": "^17.2.1",
+    "github-mcp-server": "^1.8.7",
     "typescript": "^5.9.2"
   },
   "devDependencies": {
